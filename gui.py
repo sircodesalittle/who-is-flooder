@@ -19,10 +19,6 @@ class MainFrame(Frame):
         self.pack()
         self.PPS_INPUT = StringVar()
         self.PPS_INPUT.set("500")
-        self.TUNING_FACTOR = StringVar()
-        self.TUNING_FACTOR.set("1000")
-        self.PPS_TARGET = IntVar()
-        self.PPS_TARGET.set(int(self.PPS_INPUT.get()) + int(self.TUNING_FACTOR.get()))
         self.SEC_LENGTH = StringVar()
         self.SEC_LENGTH.set("5")
         self.TARGET_IP = StringVar()
@@ -42,13 +38,13 @@ class MainFrame(Frame):
         gimmie_target.grid(row=3, column=3, sticky=W)
         target_units = Label(content_frame, text='<--IP Address').grid(row=3, column=4, sticky=W, padx=5)
         go_label = Label(content_frame, text='Click to assault-->').grid(row=4, column=1, padx=5)
-        gobutton = Button(content_frame, text="Go!", command=self.do_assault)
+        gobutton = Button(content_frame, text="Go!", command=lambda: self.do_assault())
         gobutton.grid(row=4, column=2, pady=25)
-        tuning_label = Label(content_frame, text='Speed tuning factor:\nPackets/sec fudge factor').grid(row=4, column=3, sticky=E)
-        gimmie_tuning = Entry(content_frame, textvariable=self.TUNING_FACTOR)
-        gimmie_tuning.grid(row=4, column=4, sticky=E)
 
     
     def do_assault(self):
-        t = Thread(target=who_is.send_packets_with_delay, args=(self.TARGET_IP.get(), int(self.UDP_PORT.get()), int(self.PPS_TARGET.get()), int(self.SEC_LENGTH.get())))
+        t = Thread(target=who_is.send_packets_distributed, args=(self.TARGET_IP.get(), 
+                                                                 int(self.UDP_PORT.get()), 
+                                                                 int(self.PPS_INPUT.get()), 
+                                                                 int(self.SEC_LENGTH.get())))
         t.start()
